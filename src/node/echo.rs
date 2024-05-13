@@ -19,7 +19,7 @@ pub struct Echo {
     pub echo: String,
 }
 
-type EchoMessage = Message<Body<EchoPayload>>;
+pub type EchoMessage = Message<Body<EchoPayload>>;
 
 impl Node for EchoNode {
     type MessageType = EchoMessage;
