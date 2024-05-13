@@ -1,3 +1,5 @@
+pub mod node;
+
 use serde::{Deserialize, Serialize};
 
 /// Highest level wrapper for a message sent or recieved by a node
