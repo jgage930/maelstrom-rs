@@ -1,4 +1,3 @@
-use maelstrom_rs::{Body, Message};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -14,5 +13,3 @@ pub struct Init {
     pub node_id: String,
     pub node_ids: Vec<String>,
 }
-
-fn init_node(init_message: Message<Body<InitPayload>>) -> Message<Body<InitPayload>> {}
