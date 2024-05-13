@@ -2,6 +2,7 @@ use core::panic;
 
 use super::traits::Node;
 use crate::{Body, Message};
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 pub struct EchoNode;
@@ -24,7 +25,7 @@ pub type EchoMessage = Message<Body<EchoPayload>>;
 impl Node for EchoNode {
     type MessageType = EchoMessage;
 
-    fn respond(input: &Self::MessageType) -> Self::MessageType {
+    fn respond(input: Self::MessageType) -> Result<Self::MessageType> {
         let echo = match &input.body.payload {
             EchoPayload::Echo(p) => &p.echo,
             EchoPayload::EchoOk(_) => {
@@ -36,14 +37,14 @@ impl Node for EchoNode {
             echo: echo.to_string(),
         });
 
-        Message {
-            src: input.dest.clone(),
-            dest: input.src.clone(),
+        Ok(Message {
+            src: input.dest,
+            dest: input.src,
             body: Body {
                 msg_id: Some(1),
                 in_reply_to: input.body.msg_id,
                 payload,
             },
-        }
+        })
     }
 }

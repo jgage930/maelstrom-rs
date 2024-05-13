@@ -22,16 +22,16 @@ fn read_stdin() -> String {
 }
 
 fn main_loop() -> Result<()> {
-    let stdin = read_stdin();
+    loop {
+        let stdin = read_stdin();
 
-    let input: EchoMessage =
-        serde_json::from_str(&stdin).context("Failed to read message from stdin")?;
-    let output = EchoNode::respond(&input);
+        let input: EchoMessage =
+            serde_json::from_str(&stdin).context("Failed to read message from stdin")?;
+        let output = EchoNode::respond(input)?;
 
-    let mut stdout = io::stdout();
-    output
-        .reply(&mut stdout)
-        .context("Failed to write response to stdout.")?;
-
-    Ok(())
+        let mut stdout = io::stdout();
+        output
+            .reply(&mut stdout)
+            .context("Failed to write response to stdout.")?;
+    }
 }
