@@ -1,4 +1,4 @@
-use super::traits::Node;
+use super::{generate::GeneratePayload, traits::Node};
 use crate::{Body, Message};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -33,4 +33,14 @@ pub struct ReadOk {
 #[derive(Serialize, Deserialize)]
 pub struct Topology {
     pub toplogy: HashMap<String, Vec<String>>,
+}
+
+pub type BroadcastMessage = Message<Body<BroadcastPayload>>;
+
+impl Node for BroadcastNode {
+    type MessageType = BroadcastMessage;
+
+    fn respond(&self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
+        todo!();
+    }
 }
