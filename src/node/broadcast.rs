@@ -41,11 +41,17 @@ impl Node for BroadcastNode {
     type MessageType = BroadcastMessage;
 
     fn respond(&self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
-        match input.body.payload {
-            BroadcastPayload::Broadcast(b) => todo!(),
+        let reply_payload = match input.body.payload {
+            BroadcastPayload::Broadcast(b) => {
+                self.message_ids.push(b.message);
+
+                BroadcastPayload::BroadcastOk
+            }
             BroadcastPayload::Read => todo!(),
             BroadcastPayload::Topology(t) => todo!(),
             _ => panic!("Cannot respond to message type."),
-        }
+        };
+
+        Ok(())
     }
 }
