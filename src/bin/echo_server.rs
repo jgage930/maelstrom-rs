@@ -22,12 +22,13 @@ fn read_stdin() -> String {
 }
 
 fn main_loop() -> Result<()> {
+    let node = EchoNode;
     loop {
         let stdin = read_stdin();
 
         let input: EchoMessage =
             serde_json::from_str(&stdin).context("Failed to read message from stdin")?;
-        let output = EchoNode::respond(input)?;
+        let output = node.respond(input)?;
 
         let mut stdout = io::stdout();
         output
