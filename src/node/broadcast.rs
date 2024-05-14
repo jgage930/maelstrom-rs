@@ -1,4 +1,4 @@
-use super::{generate::GeneratePayload, traits::Node};
+use super::traits::Node;
 use crate::{Body, Message};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -16,12 +16,12 @@ pub enum BroadcastPayload {
     BroadcastOk,
     Read,
     ReadOk(ReadOk),
-    Topology(Toplogy),
+    Topology(Topology),
     TopologyOk,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct BroadCast {
+pub struct Broadcast {
     pub message: usize,
 }
 
@@ -41,6 +41,11 @@ impl Node for BroadcastNode {
     type MessageType = BroadcastMessage;
 
     fn respond(&self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
-        todo!();
+        match input.body.payload {
+            BroadcastPayload::Broadcast(b) => todo!(),
+            BroadcastPayload::Read => todo!(),
+            BroadcastPayload::Topology(t) => todo!(),
+            _ => panic!("Cannot respond to message type."),
+        }
     }
 }
