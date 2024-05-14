@@ -1,5 +1,3 @@
-use core::panic;
-
 use super::traits::Node;
 use crate::{Body, Message};
 use anyhow::Result;
@@ -25,7 +23,7 @@ pub type EchoMessage = Message<Body<EchoPayload>>;
 impl Node for EchoNode {
     type MessageType = EchoMessage;
 
-    fn respond(input: Self::MessageType) -> Result<Self::MessageType> {
+    fn respond(&self, input: Self::MessageType) -> Result<Self::MessageType> {
         let echo = match &input.body.payload {
             EchoPayload::Echo(p) => &p.echo,
             EchoPayload::EchoOk(_) => {

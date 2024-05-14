@@ -1,23 +1,22 @@
 use anyhow::{Context, Result};
-use maelstrom_rs::node::echo::{EchoMessage, EchoNode};
+use maelstrom_rs::node::generate::{GenerateMessage, GenerateNode};
 use maelstrom_rs::node::traits::Node;
 use maelstrom_rs::read_stdin;
 use serde_json;
 use std::io;
 
-/// A simple Echo server.  Instantiate a single echo node and echo back a message.
 fn main() -> Result<()> {
-    main_loop().context("Failed to run echo server")?;
+    main_loop().context("Failed to run unique ids")?;
 
     Ok(())
 }
 
 fn main_loop() -> Result<()> {
-    let node = EchoNode;
+    let node = GenerateNode;
     loop {
         let stdin = read_stdin();
 
-        let input: EchoMessage =
+        let input: GenerateMessage =
             serde_json::from_str(&stdin).context("Failed to read message from stdin")?;
         let output = node.respond(input)?;
 
