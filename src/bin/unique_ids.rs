@@ -12,7 +12,7 @@ fn main() -> Result<()> {
 }
 
 fn main_loop() -> Result<()> {
-    let node = GenerateNode;
+    let mut node = GenerateNode;
     loop {
         let stdin = read_stdin();
 

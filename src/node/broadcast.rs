@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 pub struct BroadcastNode {
     /// Store the messages this node has seen.
-    message_ids: Vec<usize>,
+    pub message_ids: Vec<usize>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -32,7 +32,7 @@ pub struct ReadOk {
 
 #[derive(Serialize, Deserialize)]
 pub struct Topology {
-    pub toplogy: HashMap<String, Vec<String>>,
+    pub topology: HashMap<String, Vec<String>>,
 }
 
 pub type BroadcastMessage = Message<Body<BroadcastPayload>>;
@@ -40,18 +40,28 @@ pub type BroadcastMessage = Message<Body<BroadcastPayload>>;
 impl Node for BroadcastNode {
     type MessageType = BroadcastMessage;
 
-    fn respond(&self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
+    fn respond(&mut self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
         let reply_payload = match input.body.payload {
             BroadcastPayload::Broadcast(b) => {
                 self.message_ids.push(b.message);
 
                 BroadcastPayload::BroadcastOk
             }
-            BroadcastPayload::Read => todo!(),
-            BroadcastPayload::Topology(t) => todo!(),
+            BroadcastPayload::Read => BroadcastPayload::ReadOk(ReadOk {
+                messages: self.message_ids.clone(),
+            }),
+            BroadcastPayload::Topology(_t) => BroadcastPayload::TopologyOk,
             _ => panic!("Cannot respond to message type."),
         };
 
-        Ok(())
+        Ok(Message {
+            src: input.dest,
+            dest: input.src,
+            body: Body {
+                msg_id: Some(1),
+                in_reply_to: input.body.msg_id,
+                payload: reply_payload,
+            },
+        })
     }
 }
