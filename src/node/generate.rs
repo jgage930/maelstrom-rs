@@ -1,6 +1,7 @@
-use super::{echo::EchoMessage, traits::Node};
+use super::traits::Node;
 use crate::{Body, Message};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 pub struct GenerateNode;
 
@@ -20,9 +21,20 @@ pub struct Generate {
 pub type GenerateMessage = Message<Body<GeneratePayload>>;
 
 impl Node for GenerateNode {
-    type MessageType = EchoMessage;
+    type MessageType = GenerateMessage;
 
     fn respond(input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
-        todo!()
+        let id = Uuid::new_v4().to_string();
+        let payload = GeneratePayload::GenerateOk(Generate { id });
+
+        Ok(Message {
+            src: input.dest,
+            dest: input.src,
+            body: Body {
+                msg_id: Some(1),
+                in_reply_to: input.body.msg_id,
+                payload,
+            },
+        })
     }
 }
