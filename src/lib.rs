@@ -3,7 +3,7 @@ pub mod node;
 use anyhow::{Ok, Result};
 use serde::{Deserialize, Serialize};
 use serde_json;
-use std::io::Write;
+use std::io::{self, Write};
 
 /// Highest level wrapper for a message sent or recieved by a node
 /// generic over any body B
@@ -33,4 +33,14 @@ pub struct Body<P> {
 
     #[serde(flatten)]
     pub payload: P,
+}
+
+pub fn read_stdin() -> String {
+    io::stdin()
+        .lines()
+        .into_iter()
+        .map(|result| result.unwrap())
+        .take_while(|line| !line.is_empty())
+        .collect::<Vec<String>>()
+        .join("\n")
 }
