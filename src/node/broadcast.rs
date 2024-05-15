@@ -1,7 +1,7 @@
 use super::traits::Node;
 use crate::{Body, Message};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub struct BroadcastNode {
     /// Store the messages this node has seen.
@@ -12,27 +12,12 @@ pub struct BroadcastNode {
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum BroadcastPayload {
-    Broadcast(Broadcast),
+    Broadcast { message: usize },
     BroadcastOk,
     Read,
-    ReadOk(ReadOk),
-    Topology(Topology),
+    ReadOk { messages: Vec<usize> },
+    Topology { topology: HashMap<String, String> },
     TopologyOk,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Broadcast {
-    pub message: usize,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct ReadOk {
-    pub messages: Vec<usize>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Topology {
-    pub topology: HashMap<String, Vec<String>>,
 }
 
 pub type BroadcastMessage = Message<Body<BroadcastPayload>>;
@@ -42,15 +27,15 @@ impl Node for BroadcastNode {
 
     fn respond(&mut self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
         let reply_payload = match input.body.payload {
-            BroadcastPayload::Broadcast(b) => {
-                self.message_ids.push(b.message);
+            BroadcastPayload::Broadcast { message } => {
+                self.message_ids.push(message);
 
                 BroadcastPayload::BroadcastOk
             }
-            BroadcastPayload::Read => BroadcastPayload::ReadOk(ReadOk {
+            BroadcastPayload::Read => BroadcastPayload::ReadOk {
                 messages: self.message_ids.clone(),
-            }),
-            BroadcastPayload::Topology(_t) => BroadcastPayload::TopologyOk,
+            },
+            BroadcastPayload::Topology { topology } => BroadcastPayload::TopologyOk,
             _ => panic!("Cannot respond to message type."),
         };
 

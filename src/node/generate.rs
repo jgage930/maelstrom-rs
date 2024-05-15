@@ -10,7 +10,7 @@ pub struct GenerateNode;
 #[serde(rename_all = "snake_case")]
 pub enum GeneratePayload {
     Generate,
-    GenerateOk(Generate),
+    GenerateOk { id: String },
 }
 
 #[derive(Serialize, Deserialize)]
@@ -25,7 +25,7 @@ impl Node for GenerateNode {
 
     fn respond(&mut self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
         let id = Uuid::new_v4().to_string();
-        let payload = GeneratePayload::GenerateOk(Generate { id });
+        let payload = GeneratePayload::GenerateOk { id };
 
         Ok(Message {
             src: input.dest,
