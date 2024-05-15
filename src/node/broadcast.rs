@@ -1,11 +1,12 @@
 use super::traits::Node;
 use crate::{Body, Message};
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 
 pub struct BroadcastNode {
     /// Store the messages this node has seen.
-    pub message_ids: Vec<usize>,
+    pub message_ids: HashSet<usize>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -28,12 +29,12 @@ impl Node for BroadcastNode {
     fn respond(&mut self, input: Self::MessageType) -> anyhow::Result<Self::MessageType> {
         let reply_payload = match input.body.payload {
             BroadcastPayload::Broadcast { message } => {
-                self.message_ids.push(message);
+                self.message_ids.insert(message);
 
                 BroadcastPayload::BroadcastOk
             }
             BroadcastPayload::Read => BroadcastPayload::ReadOk {
-                messages: self.message_ids.clone(),
+                messages: self.message_ids.clone().into_iter().collect::<Vec<usize>>(),
             },
             BroadcastPayload::Topology { topology } => BroadcastPayload::TopologyOk,
             _ => panic!("Cannot respond to message type."),
@@ -50,7 +51,7 @@ impl Node for BroadcastNode {
         })
     }
 
-    fn from_init(init: super::init::InitMessage) -> Self {
-        todo!();
+    fn from_init(init: super::init::InitMessage) -> Result<Self> {
+        Ok(())
     }
 }
