@@ -23,7 +23,7 @@ pub type EchoMessage = Message<Body<EchoPayload>>;
 impl Node for EchoNode {
     type MessageType = EchoMessage;
 
-    fn respond(&self, input: Self::MessageType) -> Result<Self::MessageType> {
+    fn respond(&mut self, input: Self::MessageType) -> Result<Self::MessageType> {
         let echo = match &input.body.payload {
             EchoPayload::Echo(p) => &p.echo,
             EchoPayload::EchoOk(_) => {
