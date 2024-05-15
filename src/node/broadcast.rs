@@ -49,4 +49,8 @@ impl Node for BroadcastNode {
             },
         })
     }
+
+    fn from_init(init: super::init::InitMessage) -> Self {
+        todo!();
+    }
 }

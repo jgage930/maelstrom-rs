@@ -45,4 +45,8 @@ impl Node for EchoNode {
             },
         })
     }
+
+    fn from_init(init: super::init::InitMessage) -> Self {
+        EchoNode
+    }
 }

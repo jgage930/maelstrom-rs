@@ -1,15 +1,15 @@
+use crate::{Body, Message};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum InitPayload {
-    Init(Init),
+    Init {
+        node_id: String,
+        node_ids: Vec<String>,
+    },
     InitOk,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Init {
-    pub node_id: String,
-    pub node_ids: Vec<String>,
-}
+pub type InitMessage = Message<Body<InitPayload>>;

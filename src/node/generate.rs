@@ -37,4 +37,8 @@ impl Node for GenerateNode {
             },
         })
     }
+
+    fn from_init(init: super::init::InitMessage) -> Self {
+        GenerateNode
+    }
 }
