@@ -1,4 +1,3 @@
-use crate::{Body, Message};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -11,5 +10,3 @@ pub enum InitPayload {
     },
     InitOk,
 }
-
-pub type InitMessage = Message<Body<InitPayload>>;

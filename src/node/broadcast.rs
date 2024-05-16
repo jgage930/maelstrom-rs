@@ -1,10 +1,15 @@
-use super::traits::Node;
+use super::{init::InitPayload, traits::Node};
 use crate::{Body, Message};
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 
 pub struct BroadcastNode {
+    id: String,
+    /// A vec of ids of all nodes in cluster,
+    node_ids: Vec<String>,
+    /// The neighbors that this node can gossip to, comes from topology
+    neighbors: Vec<String>,
     /// Store the messages this node has seen.
     pub message_ids: HashSet<usize>,
 }
@@ -51,7 +56,19 @@ impl Node for BroadcastNode {
         })
     }
 
-    fn from_init(init: super::init::InitMessage) -> Result<Self> {
-        Ok(())
+    fn from_init(init: super::init::InitPayload) -> Result<Self> {
+        match init {
+            InitPayload::InitOk => panic!("Cannot create a node from InitOk."),
+            InitPayload::Init { node_id, node_ids } => {
+                let node = BroadcastNode {
+                    id: node_id,
+                    node_ids,
+                    neighbors: Vec::new(),
+                    message_ids: HashSet::new(),
+                };
+
+                Ok(node)
+            }
+        }
     }
 }

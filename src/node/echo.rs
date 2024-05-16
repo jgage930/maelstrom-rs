@@ -1,4 +1,4 @@
-use super::traits::Node;
+use super::{init::InitPayload, traits::Node};
 use crate::{Body, Message};
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
@@ -46,7 +46,7 @@ impl Node for EchoNode {
         })
     }
 
-    fn from_init(init: super::init::InitMessage) -> Self {
-        EchoNode
+    fn from_init(init: super::init::InitPayload) -> Result<Self> {
+        Ok(EchoNode)
     }
 }

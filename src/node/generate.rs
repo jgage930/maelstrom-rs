@@ -1,5 +1,6 @@
-use super::traits::Node;
+use super::{init::InitPayload, traits::Node};
 use crate::{Body, Message};
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -38,7 +39,7 @@ impl Node for GenerateNode {
         })
     }
 
-    fn from_init(init: super::init::InitMessage) -> Self {
-        GenerateNode
+    fn from_init(init: super::init::InitPayload) -> Result<Self> {
+        Ok(GenerateNode)
     }
 }
